@@ -1,9 +1,21 @@
 package com.miaosha.demo.domain;
 
-public class User {
+
+import java.io.Serializable;
+
+public class User implements Serializable {
     int id;
     String name;
     int age;
+    String password;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public int getId() {
         return id;
@@ -24,8 +36,9 @@ public class User {
     public int getAge() {
         return age;
     }
-
     public void setAge(int age) {
         this.age = age;
     }
+
+
 }

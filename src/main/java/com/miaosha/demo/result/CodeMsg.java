@@ -1,7 +1,9 @@
 package com.miaosha.demo.result;
 
 
-public class CodeMsg {
+import java.io.Serializable;
+
+public class CodeMsg implements Serializable {
 
     private int code;
     private String message;
