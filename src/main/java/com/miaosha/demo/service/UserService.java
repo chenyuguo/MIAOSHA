@@ -20,7 +20,10 @@ public class UserService {
         else{
             return false;
         }
+    }
 
+    public User getById(int id){
+        return userDao.getById(id);
     }
 
 
