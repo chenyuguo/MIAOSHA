@@ -12,6 +12,17 @@ public class RedisService {
     @Autowired
     JedisPool jedisPool;
 
+    public boolean exist (KeyPrefix prefix, String key){
+        Jedis jedis = null;
+        try{
+            jedis = jedisPool.getResource();
+            String realKey = prefix.getPrefix() + key;
+            return jedis.exists(realKey);
+        }
+        finally {
+            returnToPool(jedis);
+        }
+    }
     public <T> T get (KeyPrefix prefix, String key, Class<T> clazz){
         Jedis jedis = null;
         try{
@@ -28,6 +39,7 @@ public class RedisService {
 
     public <T> String set(KeyPrefix prefix, String key, T value){
         Jedis jedis = null;
+        String res = "";
         try{
             jedis = jedisPool.getResource();
             String strValue = beanToString(value);
@@ -35,8 +47,38 @@ public class RedisService {
                 return null;
             }
             String realKey = prefix.getPrefix() + key;
-            String res = jedis.set(realKey,strValue);
+            int expiredSeconds = prefix.getExpiredSeconds();
+            if(expiredSeconds <= 0){
+                res = jedis.set(realKey,strValue);
+            }
+            else {
+                res = jedis.setex(realKey,expiredSeconds,strValue);
+            }
             return res;
+        }
+        finally {
+            returnToPool(jedis);
+        }
+    }
+
+    public Long incr (KeyPrefix prefix, String key){
+        Jedis jedis = null;
+        try{
+            jedis = jedisPool.getResource();
+            String realKey = prefix.getPrefix() + key;
+            return jedis.incr(realKey);
+        }
+        finally {
+            returnToPool(jedis);
+        }
+    }
+
+    public Long decr (KeyPrefix prefix, String key){
+        Jedis jedis = null;
+        try{
+            jedis = jedisPool.getResource();
+            String realKey = prefix.getPrefix() + key;
+            return jedis.decr(realKey);
         }
         finally {
             returnToPool(jedis);

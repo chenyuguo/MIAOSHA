@@ -15,7 +15,7 @@ public abstract class BasePrefix implements KeyPrefix {
     }
 
     @Override
-    public int expiredSeconds() {//默认0代表永不过期
+    public int getExpiredSeconds() {//默认0代表永不过期
         return expiredSeconds;
     }
 

@@ -2,7 +2,7 @@ package com.miaosha.demo.redis;
 
 public interface KeyPrefix {
 
-    public int expiredSeconds();
+    public int getExpiredSeconds();
 
     public String getPrefix();
 }
