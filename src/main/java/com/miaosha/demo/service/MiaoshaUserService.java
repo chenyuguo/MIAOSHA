@@ -23,7 +23,7 @@ public class MiaoshaUserService {
 
     public Result<Boolean> login(MiaoshaUser miaoshaUser) {
         MiaoshaUser dbUser = miaoshaUserDao.getById(miaoshaUser.getId());
-        if(dbUser.getId() == null){
+        if(dbUser == null){
             return Result.error(CodeMsg.MOBILE_NOT_EXIST);
         }
         String dbSalt = dbUser.getSalt();
