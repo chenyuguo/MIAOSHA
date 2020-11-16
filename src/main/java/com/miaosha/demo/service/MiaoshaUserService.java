@@ -2,9 +2,13 @@ package com.miaosha.demo.service;
 
 import com.miaosha.demo.dao.MiaoshaUserDao;
 import com.miaosha.demo.domain.MiaoshaUser;
+import com.miaosha.demo.exception.GlobalException;
+import com.miaosha.demo.redis.RedisService;
+import com.miaosha.demo.redis.UserKey;
 import com.miaosha.demo.result.CodeMsg;
 import com.miaosha.demo.result.Result;
 import com.miaosha.demo.util.MD5Util;
+import com.miaosha.demo.util.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +17,14 @@ import java.util.Random;
 @Service
 public class MiaoshaUserService {
 
+    public static final String COOKIE_NAME_TOKEN = "token";
+
     @Autowired
     MiaoshaUserDao miaoshaUserDao;
+
+    @Autowired
+    RedisService redisService;
+
 
     public MiaoshaUser getById(long id){
         MiaoshaUser user = miaoshaUserDao.getById(id);
@@ -24,10 +34,12 @@ public class MiaoshaUserService {
     public Result<Boolean> login(MiaoshaUser miaoshaUser) {
         MiaoshaUser dbUser = miaoshaUserDao.getById(miaoshaUser.getId());
         if(dbUser == null){
-            return Result.error(CodeMsg.MOBILE_NOT_EXIST);
+            throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
         }
         String dbSalt = dbUser.getSalt();
         if(MD5Util.inputPassToDBPass(miaoshaUser.getPassword(),dbSalt).equals(dbUser.getPassword())){
+            String token = UUIDUtil.uuid();
+            redisService.set(UserKey.token,token,miaoshaUser);
             return Result.success(true);
         }
         return Result.error(CodeMsg.PASSWORD_ERROR);

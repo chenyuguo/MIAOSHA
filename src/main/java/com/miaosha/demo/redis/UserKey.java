@@ -8,6 +8,8 @@ public class UserKey extends BasePrefix {
 
     public static UserKey id = new UserKey("id");
     public static UserKey name = new UserKey("name");
+    public static UserKey token = new UserKey("token");
+
 
 
 }
