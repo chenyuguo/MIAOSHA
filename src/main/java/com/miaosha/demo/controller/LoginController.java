@@ -1,34 +1,43 @@
 package com.miaosha.demo.controller;
 
+import com.miaosha.demo.domain.MiaoshaUser;
 import com.miaosha.demo.domain.User;
 import com.miaosha.demo.result.Result;
+import com.miaosha.demo.service.MiaoshaUserService;
 import com.miaosha.demo.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-@Controller
+@RestController
 public class LoginController {
 
     @Autowired
-    UserService userService;
+    MiaoshaUserService miaoshaUserService;
 
     public static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
-    @ResponseBody
     @RequestMapping("/login")
-    public Result<Boolean> login(@RequestBody User user){
+    public Result<Boolean> login(@RequestBody MiaoshaUser miaoshaUser){
 
-        boolean res = userService.login(user);
+        boolean res = miaoshaUserService.login(miaoshaUser).getData();
         return Result.success(res);
     }
+
+    @RequestMapping("/register")
+    public Result<Boolean> register(@RequestBody MiaoshaUser miaoshaUser){
+
+        return miaoshaUserService.register(miaoshaUser);
+    }
+
+
+
+
+
 
 
 
