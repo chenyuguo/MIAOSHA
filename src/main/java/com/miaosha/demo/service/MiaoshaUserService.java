@@ -8,6 +8,8 @@ import com.miaosha.demo.util.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Random;
+
 @Service
 public class MiaoshaUserService {
 
@@ -33,7 +35,13 @@ public class MiaoshaUserService {
 
     public Result<Boolean> register(MiaoshaUser miaoshaUser){
         Long inputID = miaoshaUser.getId();
+        //生成随机盐，双层md5加密
+        String selfSalt = String.valueOf(new Random(1).nextInt(100));
+        String dbPassword = MD5Util.inputPassToDBPass(miaoshaUser.getPassword(),selfSalt);
+        miaoshaUser.setSalt(selfSalt);
+        miaoshaUser.setPassword(dbPassword);
         Boolean res = miaoshaUserDao.addMiaoshaUser(miaoshaUser);
+
         if(res == true){
             return Result.success(true);
         }
