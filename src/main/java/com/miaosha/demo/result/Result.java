@@ -20,6 +20,10 @@ public class Result <T> implements Serializable {
         this.msg = codeMsg.getMessage();
     }
 
+    public Result(T data) {
+        this.data = data;
+    }
+
     public int getCode() {
         return code;
     }
@@ -44,9 +48,7 @@ public class Result <T> implements Serializable {
         this.data = data;
     }
 
-    public Result(T data) {
-        this.data = data;
-    }
+
 
     public Result(int code, String msg, T data) {
         this.code = code;

@@ -22,10 +22,10 @@ public class LoginController {
     public static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     @RequestMapping("/login")
-    public Result<Boolean> login(@RequestBody MiaoshaUser miaoshaUser){
+    public Result<MiaoshaUser> login(@RequestBody MiaoshaUser miaoshaUser,@RequestParam(value = MiaoshaUserService.COOKIE_NAME_TOKEN, required = false) String paramToken){
 
-        boolean res = miaoshaUserService.login(miaoshaUser).getData();
-        return Result.success(res);
+        MiaoshaUser user = miaoshaUserService.login(miaoshaUser,paramToken).getData();
+        return Result.success(user);
     }
 
     @RequestMapping("/register")

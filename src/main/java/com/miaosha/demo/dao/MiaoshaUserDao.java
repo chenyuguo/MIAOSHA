@@ -19,5 +19,4 @@ public interface MiaoshaUserDao {
     public boolean addMiaoshaUser(MiaoshaUser miaoshaUser);
 
 
-
 }

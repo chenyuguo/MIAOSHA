@@ -11,6 +11,7 @@ import com.miaosha.demo.util.MD5Util;
 import com.miaosha.demo.util.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Random;
 
@@ -30,17 +31,27 @@ public class MiaoshaUserService {
         MiaoshaUser user = miaoshaUserDao.getById(id);
         return user;
     }
+    public MiaoshaUser getByToken(String token) {
+        if(StringUtils.isEmpty(token)){
+            return null;
+        }
+        return redisService.get(UserKey.token,token,MiaoshaUser.class);
+    }
 
-    public Result<Boolean> login(MiaoshaUser miaoshaUser) {
-        MiaoshaUser dbUser = miaoshaUserDao.getById(miaoshaUser.getId());
+    public Result<MiaoshaUser> login(MiaoshaUser miaoshaUser,String token) {
+        MiaoshaUser tokenUser = getByToken(token);
+        if(tokenUser != null) {
+            return Result.success(tokenUser);
+        }
+        MiaoshaUser dbUser = getById(miaoshaUser.getId());
         if(dbUser == null){
             throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
         }
         String dbSalt = dbUser.getSalt();
         if(MD5Util.inputPassToDBPass(miaoshaUser.getPassword(),dbSalt).equals(dbUser.getPassword())){
-            String token = UUIDUtil.uuid();
-            redisService.set(UserKey.token,token,miaoshaUser);
-            return Result.success(true);
+            String newToken = UUIDUtil.uuid();
+            redisService.set(UserKey.token, newToken, miaoshaUser);
+            return Result.success(dbUser);
         }
         return Result.error(CodeMsg.PASSWORD_ERROR);
     }
