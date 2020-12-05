@@ -40,7 +40,6 @@ public class GoodsController {
     public Result<GoodsDetailVo> detail(@PathVariable("id") long id, MiaoshaUser user) {
         GoodsVo good = goodsService.getGoodsVoByGoodsId(id);
 
-
         if(good != null) {
 
             int miaoshaStatus = 0;
@@ -62,7 +61,6 @@ public class GoodsController {
                 //剩余时间
                 remainSeconds = (endDate - now) / 1000;
             }
-
 
             GoodsDetailVo goodsDetailVo = new GoodsDetailVo();
             goodsDetailVo.setGoods(good);

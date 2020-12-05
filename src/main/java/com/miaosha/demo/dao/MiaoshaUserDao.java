@@ -13,6 +13,9 @@ public interface MiaoshaUserDao {
     @Select("select * from miaosha_user where id = #{id}")
     public MiaoshaUser getById(@Param("id") long id);
 
+    @Select("select * from miaosha_user where name = #{name}")
+    public MiaoshaUser getByName(@Param("name") String  name);
+
 
     @Insert("insert into miaosha_user (id, nickname, password, salt, head)" +
             "values (#{id}, #{nickname}, #{password}, #{salt}, #{head})")

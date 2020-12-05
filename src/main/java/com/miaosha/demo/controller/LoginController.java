@@ -1,5 +1,6 @@
 package com.miaosha.demo.controller;
 
+import com.miaosha.demo.domain.LoginUser;
 import com.miaosha.demo.domain.MiaoshaUser;
 import com.miaosha.demo.domain.User;
 import com.miaosha.demo.result.Result;
@@ -22,9 +23,11 @@ public class LoginController {
     public static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     @RequestMapping("/login")
-    public Result<MiaoshaUser> login(@RequestBody MiaoshaUser miaoshaUser,@RequestParam(value = MiaoshaUserService.COOKIE_NAME_TOKEN, required = false) String paramToken){
+    public Result<MiaoshaUser> login(@RequestBody LoginUser loginUser, @RequestParam(value = MiaoshaUserService.COOKIE_NAME_TOKEN, required = false) String paramToken){
 
-        MiaoshaUser user = miaoshaUserService.login(miaoshaUser,paramToken).getData();
+        MiaoshaUser user = miaoshaUserService.login(loginUser,paramToken).getData();
+        String token = paramToken;
+        user.setToken(token);
         return Result.success(user);
     }
 

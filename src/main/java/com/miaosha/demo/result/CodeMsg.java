@@ -22,6 +22,10 @@ public class CodeMsg implements Serializable {
     //商品模块 5003xx
     public static CodeMsg NONE_GOOD = new CodeMsg(500300, "没有该商品信息");
 
+    //秒杀模块 5004xx
+    public static CodeMsg REPEATE_MIAOSHA = new CodeMsg(500400, "重复秒杀");
+
+
     public int getCode() {
         return code;
     }

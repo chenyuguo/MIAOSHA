@@ -1,6 +1,7 @@
 package com.miaosha.demo.service;
 
 import com.miaosha.demo.dao.MiaoshaUserDao;
+import com.miaosha.demo.domain.LoginUser;
 import com.miaosha.demo.domain.MiaoshaUser;
 import com.miaosha.demo.exception.GlobalException;
 import com.miaosha.demo.redis.RedisService;
@@ -37,20 +38,26 @@ public class MiaoshaUserService {
         }
         return redisService.get(UserKey.token,token,MiaoshaUser.class);
     }
+    public MiaoshaUser getByName(String name) {
+        if (StringUtils.isEmpty(name)) {
+            return null;
+        }
+        return miaoshaUserDao.getByName(name);
+    }
 
-    public Result<MiaoshaUser> login(MiaoshaUser miaoshaUser,String token) {
+    public Result<MiaoshaUser> login(LoginUser loginUser, String token) {
         MiaoshaUser tokenUser = getByToken(token);
         if(tokenUser != null) {
             return Result.success(tokenUser);
         }
-        MiaoshaUser dbUser = getById(miaoshaUser.getId());
+        MiaoshaUser dbUser = getByName(loginUser.getName());
         if(dbUser == null){
             throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
         }
         String dbSalt = dbUser.getSalt();
-        if(MD5Util.inputPassToDBPass(miaoshaUser.getPassword(),dbSalt).equals(dbUser.getPassword())){
+        if(MD5Util.inputPassToDBPass(loginUser.getPassword(),dbSalt).equals(dbUser.getPassword())){
             String newToken = UUIDUtil.uuid();
-            redisService.set(UserKey.token, newToken, miaoshaUser);
+            redisService.set(UserKey.token, newToken, dbUser);
             return Result.success(dbUser);
         }
         return Result.error(CodeMsg.PASSWORD_ERROR);

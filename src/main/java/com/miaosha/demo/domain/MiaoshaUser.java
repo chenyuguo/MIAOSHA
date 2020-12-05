@@ -11,6 +11,16 @@ public class MiaoshaUser {
     private Date registerDate;
     private Date lastLoginDate;
     private Integer loginCount;
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     public Long getId() {
         return id;
     }
